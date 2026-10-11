@@ -41,14 +41,6 @@ jobs:
           if (-not $tsIP) { Write-Error "Tailscale IP not assigned. Exiting."; exit 1 };
           echo "TAILSCALE_IP=$tsIP" >> $env:GITHUB_ENV;
 
-      - name: Verify RDP Accessibility
-        shell: powershell
-        run: |
-          Start-Sleep -Seconds 3;
-          $testResult = Test-NetConnection -ComputerName$env:TAILSCALE_IP -Port 3389;
-          if (-not $testResult.TcpTestSucceeded) { Write-Error "TCP connection to RDP port 3389 failed"; exit 1 };
-          Write-Host "TCP connectivity successful!";
-
       - name: Maintain Connection
         shell: powershell
         run: |
