@@ -20,17 +20,13 @@ jobs:
           Restart-Service -Name TermService -Force
 
       - name: Create RDP User
-        shell: powershell
+        shell: cmd
         run: |
-          Add-Type -AssemblyName 'System.Web'
-          $raw = [System.Web.Security.Membership]::GeneratePassword(16, 3)
-          $password = "A1!" + $raw
-          $securePass = ConvertTo-SecureString$password -AsPlainText -Force
-          New-LocalUser -Name "RDP" -Password $securePass -AccountNeverExpires
-          Add-LocalGroupMember -Group "Administrators" -Member "RDP"
-          Add-LocalGroupMember -Group "Remote Desktop Users" -Member "RDP"
-          echo "RDP_PASS=$password" >> $env:GITHUB_ENV
-          Write-Host "RDP user created successfully."
+          net user RDP "AdminPass2026!#" /add /y
+          net localgroup Administrators RDP /add
+          net localgroup "Remote Desktop Users" RDP /add
+          echo RDP_PASS=AdminPass2026!#>> %GITHUB_ENV%
+          echo User created successfully.
 
       - name: Install Tailscale
         shell: powershell
